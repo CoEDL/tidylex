@@ -19,6 +19,10 @@ Imports:
     tidyr,
     zoo
 RoxygenNote: 6.0.1
-Suggests: knitr,
-    rmarkdown
+URL: https://github.com/coedl/tidylex
+BugReports: https://github.com/coedl/tidylex/issues
+Suggests:
+    knitr,
+    rmarkdown,
+    testthat
 VignetteBuilder: knitr

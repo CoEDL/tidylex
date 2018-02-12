@@ -1,0 +1,9 @@
+url: https://coedl.github.io/tidylex
+
+authors:
+  Nay San:
+    href: https://resunay.com
+
+template:
+  params:
+    bootswatch: cerulean
