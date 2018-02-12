@@ -3,7 +3,7 @@
 tidylex
 =======
 
-The goal of tidylex is to help foster collaboration between programmers and lexicographers who are interested in cleaning/transforming dictionary data stored as Toolbox-style backslash-coded data (example taken from NLTK's [`rotokas.dic`](https://github.com/nltk/nltk/blob/8eb3803cb88a6e75d18d4f740678b218b3d8f4fd/nltk/toolbox.py#L154)):
+The goal of tidylex is to help foster collaboration between R programmers and lexicographers who are interested in cleaning/transforming dictionary data stored as Toolbox-style backslash-coded data (example taken from NLTK's `rotokas.dic`):
 
     \lx kaa
     \ps V.A
