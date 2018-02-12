@@ -6,4 +6,4 @@ authors:
 
 template:
   params:
-    bootswatch: cerulean
+    bootswatch: united
