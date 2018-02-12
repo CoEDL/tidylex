@@ -2,6 +2,7 @@
 #'
 #' @param file either a path to a file, a connection, or literal data
 #' @param col_names names for line number and data columns (defaults to "line" and "data")
+#' @param remove Whether tidyr::extract should remove the "data" column
 #' @param ... Further arguments passed to tidyr::extract
 #'
 #' @import magrittr

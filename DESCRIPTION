@@ -24,5 +24,6 @@ BugReports: https://github.com/coedl/tidylex/issues
 Suggests:
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    covr
 VignetteBuilder: knitr

@@ -11,6 +11,8 @@ read_lexicon(file, col_names = c("line", "data"), remove = FALSE, ...)
 
 \item{col_names}{names for line number and data columns (defaults to "line" and "data")}
 
+\item{remove}{Whether tidyr::extract should remove the "data" column}
+
 \item{...}{Further arguments passed to tidyr::extract}
 }
 \description{

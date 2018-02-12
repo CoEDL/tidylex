@@ -3,6 +3,8 @@
 tidylex
 =======
 
+[![Travis-CI Build Status](https://travis-ci.org/CoEDL/tidylex.svg?branch=master)](https://travis-ci.org/CoEDL/tidylex) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/tidylex)](https://cran.r-project.org/package=tidylex) [![Coverage Status](https://img.shields.io/codecov/c/github/CoEDL/tidylex/master.svg)](https://codecov.io/github/CoEDL/tidylex?branch=master)
+
 The goal of tidylex is to help foster collaboration between R programmers and lexicographers who are interested in cleaning/transforming dictionary data stored as Toolbox-style backslash-coded data (example taken from NLTK's `rotokas.dic`):
 
     \lx kaa
