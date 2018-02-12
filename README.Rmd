@@ -12,11 +12,13 @@ knitr::opts_chunk$set(
 )
 ```
 
-# tidylex
+# tidylex <img src="man/figures/tidylex-logo.png" align="right" />
 
 [![Travis-CI Build Status](https://travis-ci.org/CoEDL/tidylex.svg?branch=master)](https://travis-ci.org/CoEDL/tidylex)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tidylex)](https://cran.r-project.org/package=tidylex)
 [![Coverage Status](https://img.shields.io/codecov/c/github/CoEDL/tidylex/master.svg)](https://codecov.io/github/CoEDL/tidylex?branch=master)
+
+## Overview
 
 The goal of tidylex is to help foster collaboration between R programmers and lexicographers who are interested in cleaning/transforming dictionary data stored as Toolbox-style backslash-coded data (example taken from NLTK's `rotokas.dic`): 
 
