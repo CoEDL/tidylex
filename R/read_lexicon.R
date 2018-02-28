@@ -6,6 +6,7 @@
 #' @param ... Further arguments passed to tidyr::extract
 #'
 #' @import magrittr
+#' @import methods
 #'
 #' @export
 #'
