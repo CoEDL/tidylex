@@ -2,3 +2,5 @@
 
 export(read_lexicon)
 import(magrittr)
+importFrom(methods,hasArg)
+importFrom(stats,setNames)

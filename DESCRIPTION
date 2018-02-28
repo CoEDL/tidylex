@@ -12,6 +12,7 @@ LazyData: true
 Depends:
     dplyr
 Imports:
+    methods,
     magrittr,
     purrr,
     readr,

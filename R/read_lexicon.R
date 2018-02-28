@@ -6,7 +6,8 @@
 #' @param ... Further arguments passed to tidyr::extract
 #'
 #' @import magrittr
-#' @import methods
+#' @importFrom stats setNames
+#' @importFrom methods hasArg
 #'
 #' @export
 #'
@@ -30,7 +31,7 @@ read_lexicon <- function(file, col_names = c("line", "data"), remove = FALSE, ..
         dplyr::tibble(1:length(.), .) %>%
         setNames(col_names)
 
-    if(methods::hasArg(regex) & methods::hasArg(into)) {
+    if(hasArg(regex) & hasArg(into)) {
         tidyr::extract(lx_df, col = col_names[2], remove, ...)
     } else {
         lx_df
