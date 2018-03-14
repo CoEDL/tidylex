@@ -32,6 +32,18 @@ Source: CRAN
 Version: 0.12.15
 Hash: a419463fc86b3ecc7338ae3ac3bbb268
 
+Package: V8
+Source: CRAN
+Version: 1.5
+Hash: a933dcc06151538c3988b18155e85aeb
+Requires: Rcpp, curl, jsonlite
+
+Package: assertr
+Source: CRAN
+Version: 2.5
+Hash: 5166f94c9904bcec296b805c99e1862b
+Requires: lazyeval, rlang, dplyr
+
 Package: assertthat
 Source: CRAN
 Version: 0.2.0
@@ -178,8 +190,8 @@ Package: dplyr
 Source: CRAN
 Version: 0.7.4
 Hash: afee83094df37f504c726aebed71109c
-Requires: BH, R6, Rcpp, assertthat, bindrcpp, glue, magrittr,
-    pkgconfig, plogr, rlang, tibble
+Requires: BH, R6, Rcpp, assertthat, glue, magrittr, pkgconfig, plogr,
+    rlang, bindrcpp, tibble
 
 Package: enc
 Source: CRAN
@@ -344,7 +356,7 @@ Package: pillar
 Source: CRAN
 Version: 1.1.0
 Hash: 576bf712d620ca2b6ca76ca7b6cb5547
-Requires: cli, crayon, rlang, utf8
+Requires: crayon, rlang, utf8, cli
 
 Package: pkgbuild
 Source: github
@@ -414,7 +426,7 @@ Requires: magrittr, rlang, tibble
 Package: readr
 Source: CRAN
 Version: 1.1.1
-Hash: 84a71b41255ec67c4b5cd8fd8007fad3
+Hash: ca8420d2c9d884b0a42ee271d21d7cd3
 Requires: BH, R6, Rcpp, hms, tibble
 
 Package: readxl
@@ -533,7 +545,7 @@ Package: tibble
 Source: CRAN
 Version: 1.4.2
 Hash: 83895360ce4f8d2ce92eee00526b5b0b
-Requires: cli, crayon, pillar, rlang
+Requires: crayon, rlang, cli, pillar
 
 Package: tidyr
 Source: CRAN

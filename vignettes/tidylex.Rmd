@@ -1,6 +1,6 @@
 ---
-title: "Vignette Title"
-author: "Vignette Author"
+title: "Introduction to tidylex"
+author: "Nay San, Ellison Luk"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
