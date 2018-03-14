@@ -20,7 +20,7 @@ parse_string("xyz")
 # A more complete demo:
 # 1. Read a lexicon and group lines using zoo:na.locf0()
 lexicon_df <-
-system.file("extdata", "error-french.txt", package = "tidylex") \%>\%
+    system.file("extdata", "error-french.txt", package = "tidylex") \%>\%
     read_lexicon(regex = "\\\\\\\\([a-z]+)\\\\s(.*)", into  = c("code", "value")) \%>\%
     mutate(lx_line = ifelse(code == "lx", line, NA) \%>\% zoo::na.locf0())
 

@@ -113,7 +113,7 @@
 <span class='co'># A more complete demo:</span>
 <span class='co'># 1. Read a lexicon and group lines using zoo:na.locf0()</span>
 <span class='no'>lexicon_df</span> <span class='kw'>&lt;-</span>
-<span class='fu'>system.file</span>(<span class='st'>"extdata"</span>, <span class='st'>"error-french.txt"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"tidylex"</span>) <span class='kw'>%&gt;%</span>
+    <span class='fu'>system.file</span>(<span class='st'>"extdata"</span>, <span class='st'>"error-french.txt"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"tidylex"</span>) <span class='kw'>%&gt;%</span>
     <span class='fu'><a href='read_lexicon.html'>read_lexicon</a></span>(<span class='kw'>regex</span> <span class='kw'>=</span> <span class='st'>"\\\\([a-z]+)\\s(.*)"</span>, <span class='kw'>into</span>  <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"code"</span>, <span class='st'>"value"</span>)) <span class='kw'>%&gt;%</span>
     <span class='fu'>mutate</span>(<span class='kw'>lx_line</span> <span class='kw'>=</span> <span class='fu'>ifelse</span>(<span class='no'>code</span> <span class='kw'>==</span> <span class='st'>"lx"</span>, <span class='no'>line</span>, <span class='fl'>NA</span>) <span class='kw'>%&gt;%</span> <span class='kw pkg'>zoo</span><span class='kw ns'>::</span><span class='fu'><a href='http://www.rdocumentation.org/packages/zoo/topics/na.locf'>na.locf0</a></span>())
 
