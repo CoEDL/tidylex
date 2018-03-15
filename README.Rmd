@@ -2,11 +2,6 @@
 output: github_document
 ---
 
-<style type="text/css">
-span.bscode { color:#d95f02 }
-span.bsval  { color: #377eb8}
-</style>
-
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, echo = FALSE}
@@ -19,7 +14,9 @@ knitr::opts_chunk$set(
 
 # tidylex <img src="man/figures/tidylex-logo.png" align="right" />
 
-
+[![Travis-CI Build Status](https://travis-ci.org/CoEDL/tidylex.svg?branch=master)](https://travis-ci.org/CoEDL/tidylex)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/tidylex)](https://cran.r-project.org/package=tidylex)
+[![Coverage Status](https://img.shields.io/codecov/c/github/CoEDL/tidylex/master.svg)](https://codecov.io/github/CoEDL/tidylex?branch=master)
 
 ## Overview
 
