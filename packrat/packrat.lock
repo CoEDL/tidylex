@@ -265,6 +265,18 @@ Version: 0.3.6
 Hash: f6fa1ff1db422a2c5227be30cab6c273
 Requires: Rcpp, digest
 
+Package: htmlwidgets
+Source: CRAN
+Version: 1.0
+Hash: f34dd51a49b6d2947bc853223897854b
+Requires: htmltools, jsonlite, yaml
+
+Package: httpuv
+Source: CRAN
+Version: 1.3.6.2
+Hash: 0e8f7a1514cdcbe96e551b93facda38b
+Requires: Rcpp
+
 Package: httr
 Source: CRAN
 Version: 1.3.1
@@ -296,6 +308,12 @@ Package: lazyeval
 Source: CRAN
 Version: 0.2.1
 Hash: 88926ad9c43581fd0822a37c8ed09f05
+
+Package: listviewer
+Source: CRAN
+Version: 1.4.0
+Hash: 1ba384647832321e8b40ef071ebe2b30
+Requires: htmltools, htmlwidgets, shiny
 
 Package: lubridate
 Source: CRAN
@@ -517,6 +535,18 @@ Version: 0.3-1
 Hash: 367275e3dcdd208339e131c7a41bec56
 Requires: stringr
 
+Package: shiny
+Source: CRAN
+Version: 1.0.5
+Hash: 4d47532a807122bfd6bc3818310f9d2e
+Requires: R6, digest, htmltools, httpuv, jsonlite, mime, sourcetools,
+    xtable
+
+Package: sourcetools
+Source: CRAN
+Version: 0.1.6
+Hash: 226d56d7469587da40b0f96180e711b4
+
 Package: stringi
 Source: CRAN
 Version: 1.1.6
@@ -605,6 +635,11 @@ Source: CRAN
 Version: 1.2.0
 Hash: 94e9b541116e27d80a23d436f81eda80
 Requires: Rcpp
+
+Package: xtable
+Source: CRAN
+Version: 1.8-2
+Hash: 7293235cfcc14cdff1ce7fd1a0212031
 
 Package: yaml
 Source: CRAN

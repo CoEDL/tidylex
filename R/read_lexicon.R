@@ -5,7 +5,10 @@
 #' @param remove Whether tidyr::extract should remove the "data" column
 #' @param ... Further arguments passed to tidyr::extract
 #'
-#' @import magrittr
+#' @import dplyr
+#' @importFrom readr read_lines
+#' @importFrom tidyr extract
+#' @importFrom magrittr "%>%"
 #' @importFrom stats setNames
 #' @importFrom methods hasArg
 #'
@@ -27,12 +30,12 @@ read_lexicon <- function(file, col_names = c("line", "data"), remove = FALSE, ..
     stopifnot(length(col_names) == 2)
 
     lx_df <-
-        readr::read_lines(file) %>%
-        dplyr::tibble(1:length(.), .) %>%
+        read_lines(file) %>%
+        tibble(1:length(.), .) %>%
         setNames(col_names)
 
     if(hasArg(regex) & hasArg(into)) {
-        tidyr::extract(lx_df, col = col_names[2], remove, ...)
+        extract(lx_df, col = col_names[2], remove, ...)
     } else {
         lx_df
     }

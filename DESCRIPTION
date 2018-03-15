@@ -1,7 +1,7 @@
 Package: tidylex
 Type: Package
 Title: Tidy lexicographical data in backslash-coded formats
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: c(person("Nay", "San", role = c("aut", "cre"),
                      email = "nay.san@anu.edu.au"))
 Description: More about what it does (maybe more than one line)
@@ -17,6 +17,7 @@ Imports:
     magrittr,
     purrr,
     readr,
+    rlang,
     stringr,
     tidyr,
     zoo
