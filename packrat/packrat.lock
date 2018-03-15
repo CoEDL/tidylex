@@ -493,8 +493,8 @@ GithubSha1: 616fd4d526ac0058534d90aee8b588088f73efd8
 
 Package: rmarkdown
 Source: CRAN
-Version: 1.8
-Hash: 2a7842e3cee62a79dd737d17e9e9d86b
+Version: 1.9
+Hash: ab7f84e6f41ed8d8e8b9a2031cf631f8
 Requires: base64enc, evaluate, htmltools, jsonlite, knitr, mime,
     rprojroot, stringr, yaml
 

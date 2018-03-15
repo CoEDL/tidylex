@@ -9,7 +9,8 @@
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/united/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
+<!-- mathjax --><script src="https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
@@ -29,16 +30,22 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
 <li>
-  <a href="index.html">
-    <span class="fa fa-home fa-lg"></span>
-     
-  </a>
-</li>
-<li>
-  <a href="articles/tidylex.html">Get Started</a>
+  <a href="articles/tidylex.html">Get started</a>
 </li>
 <li>
   <a href="reference/index.html">Reference</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Articles
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+<li>
+      <a href="articles/index.html">Two-table verbs</a>
+    </li>
+  </ul>
 </li>
 <li>
   <a href="news/index.html">News</a>
@@ -67,79 +74,165 @@
     
     
 <div class="contents">
-<!-- README.md is generated from README.Rmd. Please edit that file -->
-<div id="tidylex" class="section level1">
+<style type="text/css">
+span.bscode { color:#d95f02 }
+span.bsval  { color: #377eb8}
+</style>
+<!-- README.md is generated from README.Rmd. Please edit that file --><div id="tidylex" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#tidylex" class="anchor"></a>tidylex <img src="reference/figures/tidylex-logo.png" align="right">
 </h1></div>
-
 <div id="overview" class="section level2">
 <h2 class="hasAnchor">
 <a href="#overview" class="anchor"></a>Overview</h2>
-<p>The goal of tidylex is to help foster collaboration between R programmers and lexicographers who are interested in cleaning/transforming dictionary data stored as Toolbox-style backslash-coded data (example taken from NLTK’s <code>rotokas.dic</code>):</p>
-<pre><code>\lx kaa
-\ps V.A
-\ge gag
-\gp nek i pas
+<p>The purpose of tidylex is to provide a collaborative, open-source, cross-platform tool for tidying dictionary data stored as Toolbox-style backslash-coded data (a broad convention for serializing lexicographic data in a human-readable and -editable manner). This format is commonly used in the description of under-documented languages, many of which are also highly endangered.</p>
+<p>The example below shows a toy French-to-English dictionary with 3 entries <em>rouge</em>, <em>bonjour</em>, and <em>parler</em> with various lexicographic information about these 3 entries (<code>lx</code>: lexeme, <code>ps</code>: part of speech, <code>de</code>: definition, <code>xv</code>: example, vernacular in source language, <code>xe</code>: translation, English). Tidylex makes it easy to make assertions of how these entries <em>should</em> be structured, and to test whether or not they are well-structured (<a href="#examples">examples</a> provided below).</p>
+<pre style="background:#f1f1f1">
+<span class="bscode">\lx</span> <span class="bsval">rouge</span>
+<span class="bscode">\ps</span> <span class="bsval">adjective</span>
+<span class="bscode">\de</span> <span class="bsval">red</span>
+<span class="bscode">\xv</span> <span class="bsval">La chaise est rouge</span>
+<span class="bscode">\xe</span> <span class="bsval">The chair is red</span>
 
-\lx kaa
-\ps V.B
-\ge strangle
-\gp pasim nek</code></pre>
-<p>We follow David Robinson’s educational philosophy of “<a href="http://varianceexplained.org/r/teach-tidyverse/#get-students-doing-powerful-things-quickly" target="_blank">Get students doing powerful things quickly</a>” and provide a set of convenience functions and accompanying walkthroughs to help teams get started <em>quickly</em> on processing their dictionary data within the <a href="https://www.tidyverse.org/">tidyverse</a> framework.</p>
+<span class="bscode">\lx</span> <span class="bsval">bonjour</span>
+<span class="bscode">\de</span> <span class="bsval">hello</span>
+<span class="bscode">\ps</span> <span class="bsval">exclamation</span>
+
+<span class="bscode">\lx</span> <span class="bsval">parler</span>
+<span class="bscode">\ps</span> <span class="bsval">verb</span>
+<span class="bscode">\de</span> <span class="bsval">speak</span>
+<span class="bscode">\xv</span> <span class="bsval">Parlez-vous français?</span>
+</pre>
 </div>
 <div id="why-is-tidylex-needed" class="section level2">
 <h2 class="hasAnchor">
 <a href="#why-is-tidylex-needed" class="anchor"></a>Why is tidylex needed?</h2>
-<ul>
-<li>Toolbox-style files are commonly used in description of under-resourced languages</li>
-<li>Almost always hand-edited, so have lots of inconsistencies, so data must be cleaned</li>
-<li>We introduce a step-by-step walkthrough on using modern data engineering tools to clean and maintain cleanliness of lexicon file</li>
-<li>Stepping stone for
-<ul>
-<li>programmers for working with lexicographical data</li>
-<li>lexicographers for working with Git(Hub)/Travis CI, etc.</li>
-</ul>
-</li>
-</ul>
+<p>Owing to the dictionary data having been hand-edited over many years, often by multiple contributors, there is often a lot of structural inconsistency in these plain-text files. Given the structural variation, the knowledge about these languages are effectively ‘locked up’ in terms of machine-processability. Tidylex provides a set of functions to iteratively work towards a well-structured, or ‘tidy’, lexicon, and maintain the tidiness of the lexicon when used within a Continuous Testing setting (e.g. with Travis CI, or GitLab pipelines).</p>
 </div>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#installation" class="anchor"></a>Installation</h2>
 <p>You can install tidylex from github with:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"CoEDL/tidylex"</span>)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># install.packages("devtools")</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">"CoEDL/tidylex"</span>)</a></code></pre></div>
 </div>
-<div id="example" class="section level2">
+<div id="examples" class="section level2">
 <h2 class="hasAnchor">
-<a href="#example" class="anchor"></a>Example</h2>
-<div id="verify-all-headwords-are-unique" class="section level3">
+<a href="#examples" class="anchor"></a>Examples</h2>
+<div id="read-a-lexicon-line-by-line-into-a-data-frame" class="section level3">
 <h3 class="hasAnchor">
-<a href="#verify-all-headwords-are-unique" class="anchor"></a>Verify all headwords are unique</h3>
-<p>Suppose you require that all headwords (<code>\lx</code> items) be unique, and all homographs be explicitly marked (e.g. <code>\lx kaa#1</code>, <code>\lx kaa#2</code>). The example below shows how we can read a lexicon file, keeping only the <code>lx</code> lines (using the <code>filter</code> command), and create a tally for the various values of the <code>lx</code> field (notice <code>\lx kaa</code> occurs twice).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(tidylex)
-
-lexicon &lt;-
-<span class="st">'</span><span class="ch">\\</span><span class="st">lx kaa</span>
-<span class="ch">\\</span><span class="st">ps V.A</span>
-<span class="ch">\\</span><span class="st">ge gag</span>
-<span class="ch">\\</span><span class="st">gp nek i pas</span>
-
-<span class="ch">\\</span><span class="st">lx kaa</span>
-<span class="ch">\\</span><span class="st">ps V.B</span>
-<span class="ch">\\</span><span class="st">ge strangle</span>
-<span class="ch">\\</span><span class="st">gp pasim nek'</span>
-
-<span class="kw"><a href="reference/read_lexicon.html">read_lexicon</a></span>(<span class="dt">file  =</span> lexicon,
-             <span class="dt">regex =</span> <span class="st">"</span><span class="ch">\\\\</span><span class="st">([a-z]+)</span><span class="ch">\\</span><span class="st">s(.*)"</span>,
-             <span class="dt">into  =</span> <span class="kw">c</span>(<span class="st">"code"</span>, <span class="st">"value"</span>)) <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">filter</span>(code <span class="op">==</span><span class="st"> "lx"</span>) <span class="op">%&gt;%</span>
-<span class="st">    </span><span class="kw">group_by</span>(value) <span class="op">%&gt;%</span><span class="st"> </span>
-<span class="st">    </span><span class="kw">tally</span>()
-<span class="co">#&gt; # A tibble: 1 x 2</span>
-<span class="co">#&gt;   value     n</span>
-<span class="co">#&gt;   &lt;chr&gt; &lt;int&gt;</span>
-<span class="co">#&gt; 1 kaa       2</span></code></pre></div>
+<a href="#read-a-lexicon-line-by-line-into-a-data-frame" class="anchor"></a>Read a lexicon line-by-line into a data frame</h3>
+<p>As there is project-to-project variation in coding convention (for <code>\lx</code>, some others use <code>\me</code> for main entry, or ‘<code>.</code>’ in place of backslashes, e.g. <code>.i bonjour</code>), the <code>read_lexicon</code> function provides a quick way to specify a regular expression to parse each line in the dictionary into its various components.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">library</span>(tidylex)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co"># The path to the 'rouge, bonjour, parler' dictionary shown in the example above</span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">lexicon_file &lt;-<span class="st"> </span><span class="kw">system.file</span>(<span class="st">"extdata"</span>, <span class="st">"error-french.txt"</span>, <span class="dt">package =</span> <span class="st">"tidylex"</span>)</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb2-6" data-line-number="6">lexicon_df  &lt;-<span class="st"> </span><span class="kw"><a href="reference/read_lexicon.html">read_lexicon</a></span>(</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7">    <span class="dt">file  =</span> lexicon_file,</a>
+<a class="sourceLine" id="cb2-8" data-line-number="8">    <span class="dt">regex =</span> <span class="st">"</span><span class="ch">\\\\</span><span class="st">?([a-z]*)</span><span class="ch">\\</span><span class="st">s?(.*)"</span>,   <span class="co"># Note two capture groups, in parentheses</span></a>
+<a class="sourceLine" id="cb2-9" data-line-number="9">    <span class="dt">into  =</span> <span class="kw">c</span>(<span class="st">"code"</span>, <span class="st">"value"</span>)         <span class="co"># Captured data placed, respectively, in 'code' and 'value' columns</span></a>
+<a class="sourceLine" id="cb2-10" data-line-number="10">)</a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12">lexicon_df</a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt; # A tibble: 14 x 4</span></a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#&gt;     line data                         code  value                </span></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">#&gt;    &lt;int&gt; &lt;chr&gt;                        &lt;chr&gt; &lt;chr&gt;                </span></a>
+<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="co">#&gt;  1     1 "\\lx rouge"                 lx    rouge                </span></a>
+<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co">#&gt;  2     2 "\\ps adjective"             ps    adjective            </span></a>
+<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co">#&gt;  3     3 "\\de red"                   de    red                  </span></a>
+<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">#&gt;  4     4 "\\xv La chaise est rouge"   xv    La chaise est rouge  </span></a>
+<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co">#&gt;  5     5 "\\xe The chair is red"      xe    The chair is red     </span></a>
+<a class="sourceLine" id="cb2-21" data-line-number="21"><span class="co">#&gt;  6     6 ""                           ""    ""                   </span></a>
+<a class="sourceLine" id="cb2-22" data-line-number="22"><span class="co">#&gt;  7     7 "\\lx bonjour"               lx    bonjour              </span></a>
+<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="co">#&gt;  8     8 "\\de hello"                 de    hello                </span></a>
+<a class="sourceLine" id="cb2-24" data-line-number="24"><span class="co">#&gt;  9     9 "\\ps exclamation"           ps    exclamation          </span></a>
+<a class="sourceLine" id="cb2-25" data-line-number="25"><span class="co">#&gt; 10    10 ""                           ""    ""                   </span></a>
+<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="co">#&gt; 11    11 "\\lx parler"                lx    parler               </span></a>
+<a class="sourceLine" id="cb2-27" data-line-number="27"><span class="co">#&gt; 12    12 "\\ps verb"                  ps    verb                 </span></a>
+<a class="sourceLine" id="cb2-28" data-line-number="28"><span class="co">#&gt; 13    13 "\\de speak"                 de    speak                </span></a>
+<a class="sourceLine" id="cb2-29" data-line-number="29"><span class="co">#&gt; 14    14 "\\xv Parlez-vous français?" xv    Parlez-vous français?</span></a></code></pre></div>
+</div>
+<div id="assign-groups-to-rows-based-on-properties-of-the-rows" class="section level3">
+<h3 class="hasAnchor">
+<a href="#assign-groups-to-rows-based-on-properties-of-the-rows" class="anchor"></a>Assign groups to rows based on properties of the rows</h3>
+<p>A common pre-processing routine that must be done is to group the lines into various subgroups, e.g. within some given entry, or within some given sense of the entry, etc. We can easily do this with the <code>add_group_col</code> function.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">grouped_lxdf &lt;-</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="st">    </span>lexicon_df <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb3-3" data-line-number="3"><span class="st">    </span><span class="kw"><a href="reference/add_group_col.html">add_group_col</a></span>(</a>
+<a class="sourceLine" id="cb3-4" data-line-number="4">        <span class="dt">name  =</span> lx_group,                 <span class="co"># Name of the new grouping column</span></a>
+<a class="sourceLine" id="cb3-5" data-line-number="5">        <span class="dt">where =</span> code <span class="op">==</span><span class="st"> "lx"</span>,             <span class="co"># When to fill with a value, i.e. when *not* to inherit value</span></a>
+<a class="sourceLine" id="cb3-6" data-line-number="6">        <span class="dt">value =</span> <span class="kw">paste0</span>(line, <span class="st">": "</span>, value) <span class="co"># What the value should be when above condition is true</span></a>
+<a class="sourceLine" id="cb3-7" data-line-number="7">    )</a>
+<a class="sourceLine" id="cb3-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb3-9" data-line-number="9">grouped_lxdf</a>
+<a class="sourceLine" id="cb3-10" data-line-number="10"><span class="co">#&gt; # A tibble: 14 x 5</span></a>
+<a class="sourceLine" id="cb3-11" data-line-number="11"><span class="co">#&gt; # Groups:   lx_group [3]</span></a>
+<a class="sourceLine" id="cb3-12" data-line-number="12"><span class="co">#&gt;     line data                         code  value                 lx_group</span></a>
+<a class="sourceLine" id="cb3-13" data-line-number="13"><span class="co">#&gt;    &lt;int&gt; &lt;chr&gt;                        &lt;chr&gt; &lt;chr&gt;                 &lt;chr&gt;   </span></a>
+<a class="sourceLine" id="cb3-14" data-line-number="14"><span class="co">#&gt;  1     1 "\\lx rouge"                 lx    rouge                 1: rouge</span></a>
+<a class="sourceLine" id="cb3-15" data-line-number="15"><span class="co">#&gt;  2     2 "\\ps adjective"             ps    adjective             1: rouge</span></a>
+<a class="sourceLine" id="cb3-16" data-line-number="16"><span class="co">#&gt;  3     3 "\\de red"                   de    red                   1: rouge</span></a>
+<a class="sourceLine" id="cb3-17" data-line-number="17"><span class="co">#&gt;  4     4 "\\xv La chaise est rouge"   xv    La chaise est rouge   1: rouge</span></a>
+<a class="sourceLine" id="cb3-18" data-line-number="18"><span class="co">#&gt;  5     5 "\\xe The chair is red"      xe    The chair is red      1: rouge</span></a>
+<a class="sourceLine" id="cb3-19" data-line-number="19"><span class="co">#&gt;  6     6 ""                           ""    ""                    1: rouge</span></a>
+<a class="sourceLine" id="cb3-20" data-line-number="20"><span class="co">#&gt;  7     7 "\\lx bonjour"               lx    bonjour               7: bonj…</span></a>
+<a class="sourceLine" id="cb3-21" data-line-number="21"><span class="co">#&gt;  8     8 "\\de hello"                 de    hello                 7: bonj…</span></a>
+<a class="sourceLine" id="cb3-22" data-line-number="22"><span class="co">#&gt;  9     9 "\\ps exclamation"           ps    exclamation           7: bonj…</span></a>
+<a class="sourceLine" id="cb3-23" data-line-number="23"><span class="co">#&gt; 10    10 ""                           ""    ""                    7: bonj…</span></a>
+<a class="sourceLine" id="cb3-24" data-line-number="24"><span class="co">#&gt; 11    11 "\\lx parler"                lx    parler                11: par…</span></a>
+<a class="sourceLine" id="cb3-25" data-line-number="25"><span class="co">#&gt; 12    12 "\\ps verb"                  ps    verb                  11: par…</span></a>
+<a class="sourceLine" id="cb3-26" data-line-number="26"><span class="co">#&gt; 13    13 "\\de speak"                 de    speak                 11: par…</span></a>
+<a class="sourceLine" id="cb3-27" data-line-number="27"><span class="co">#&gt; 14    14 "\\xv Parlez-vous français?" xv    Parlez-vous français? 11: par…</span></a></code></pre></div>
+</div>
+<div id="formally-define-a-well-formed-entry-and-test-entries-against-definition" class="section level3">
+<h3 class="hasAnchor">
+<a href="#formally-define-a-well-formed-entry-and-test-entries-against-definition" class="anchor"></a>Formally define a well-formed entry and test entries against definition</h3>
+<p>Tidylex lets you define and use basic <a href="https://nearley.js.org/">Nearley</a> grammars within R to test for well-formedness of strings [<a href="#nearley">1</a>]. We begin by forming a set of strings to test. In the example below, we simple concatenate all the codes within the 3 entry groups into a single string:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">entry_strs &lt;-</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="st">    </span>grouped_lxdf <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="st">    </span><span class="kw">summarise</span>(<span class="dt">code_sequence =</span> <span class="kw">paste0</span>(code, <span class="dt">collapse =</span> <span class="st">" "</span>))</a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5">entry_strs</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="co">#&gt; # A tibble: 3 x 2</span></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="co">#&gt;   lx_group   code_sequence    </span></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8"><span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;            </span></a>
+<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="co">#&gt; 1 1: rouge   "lx ps de xv xe "</span></a>
+<a class="sourceLine" id="cb4-10" data-line-number="10"><span class="co">#&gt; 2 11: parler lx ps de xv      </span></a>
+<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co">#&gt; 3 7: bonjour "lx de ps "</span></a></code></pre></div>
+<p>For such sequences above, we can define a context-free grammar (equivalent to phrase structure rules) within the Nearley notation below (<code>:?</code>, <code>:+</code> are quantifiers indicating, respectively, ‘zero or one’ and ‘one or more’ of the preceding entity). We use the <code>compile_grammar</code> function to generate code that can be used to test strings as to whether or not they are well-formed.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">entry_parser &lt;-<span class="st">  </span><span class="kw"><a href="reference/compile_grammar.html">compile_grammar</a></span>(<span class="st">'</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="st">    headword -&gt; "lx" _ "ps" _ "de" _ examples:?</span></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="st">    examples -&gt; ("xv" _ "xe" _):+</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="st">    _ -&gt; " "</span></a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="st">'</span>)</a>
+<a class="sourceLine" id="cb5-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb5-9" data-line-number="9">parsed_entries &lt;-</a>
+<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="st">    </span>entry_strs <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="st">    </span><span class="kw">rowwise</span>() <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">parsed_sequence =</span> <span class="kw">entry_parser</span>(code_sequence, <span class="dt">stop_on_error =</span> <span class="ot">FALSE</span>))</a>
+<a class="sourceLine" id="cb5-13" data-line-number="13"></a>
+<a class="sourceLine" id="cb5-14" data-line-number="14"><span class="co"># Remove successful parse trees (which are lists, and retain only error message strings)</span></a>
+<a class="sourceLine" id="cb5-15" data-line-number="15">parsed_entries <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb5-16" data-line-number="16"><span class="st">    </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.list</span>(parsed_sequence)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb5-17" data-line-number="17"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">parsed_sequence =</span> <span class="kw">unlist</span>(parsed_sequence))</a>
+<a class="sourceLine" id="cb5-18" data-line-number="18"><span class="co">#&gt; Source: local data frame [2 x 3]</span></a>
+<a class="sourceLine" id="cb5-19" data-line-number="19"><span class="co">#&gt; Groups: &lt;by row&gt;</span></a>
+<a class="sourceLine" id="cb5-20" data-line-number="20"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-21" data-line-number="21"><span class="co">#&gt; # A tibble: 2 x 3</span></a>
+<a class="sourceLine" id="cb5-22" data-line-number="22"><span class="co">#&gt;   lx_group   code_sequence parsed_sequence                                </span></a>
+<a class="sourceLine" id="cb5-23" data-line-number="23"><span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;         &lt;chr&gt;                                          </span></a>
+<a class="sourceLine" id="cb5-24" data-line-number="24"><span class="co">#&gt; 1 11: parler lx ps de xv   Error: Parse incomplete, expecting more text a…</span></a>
+<a class="sourceLine" id="cb5-25" data-line-number="25"><span class="co">#&gt; 2 7: bonjour "lx de ps "   "Error: invalid syntax at line 1 col 4:\n\n  l…</span></a></code></pre></div>
+<p>As we can see from the errors, the <em>parler</em> entry is missing an obligatory <code>xe</code> (English translation) for the <code>xv</code> code, while the <em>bonjour</em> entry is invalid because the <code>de</code> and <code>ps</code> codes have been reversed (relative to the order required by the grammar above <code>headword -&gt; "lx" _ "ps" _ "de" ...</code>).</p>
+<hr>
+<p><b>Footnotes</b></p>
+<ol style="list-style-type: decimal">
+<li>
+<a name="nearley"></a> At the moment tidylex can’t work with <em>all</em> Nearley grammars since the R V8 package which uses an older version of the V8 engine for cross-compatibility requirements. So, Nearley grammars that make use of ES6 features won’t compile in V8 3.14.</li>
+</ol>
 </div>
 </div>
 </div>
@@ -161,12 +254,6 @@ lexicon &lt;-
 <ul class="list-unstyled">
 <li>
 <a href="https://resunay.com">Nay San</a> <br><small class="roles"> Author, maintainer </small> </li>
-</ul>
-<h2>Dev status</h2>
-<ul class="list-unstyled">
-<li><a href="https://travis-ci.org/CoEDL/tidylex"><img src="https://travis-ci.org/CoEDL/tidylex.svg?branch=master" alt="Travis-CI Build Status"></a></li>
-<li><a href="https://cran.r-project.org/package=tidylex"><img src="http://www.r-pkg.org/badges/version/tidylex" alt="CRAN_Status_Badge"></a></li>
-<li><a href="https://codecov.io/github/CoEDL/tidylex?branch=master"><img src="https://img.shields.io/codecov/c/github/CoEDL/tidylex/master.svg" alt="Coverage Status"></a></li>
 </ul>
 </div>
 

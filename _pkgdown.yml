@@ -7,3 +7,20 @@ authors:
 template:
   params:
     bootswatch: united
+
+navbar:
+  type: default
+  left:
+  - text: Get started
+    href: articles/tidylex.html
+  - text: Reference
+    href: reference/index.html
+  - text: Articles
+    menu:
+    - text: Two-table verbs
+      href: articles/index.html
+  - text: News
+    href: news/index.html
+  right:
+  - icon: fa-github fa-lg
+    href: https://github.com/coedl/tidylex
