@@ -1,5 +1,0 @@
-\lx bonjour
-\de hello
-
-\lx au revoir
-\de goodbye
