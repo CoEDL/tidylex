@@ -12,6 +12,6 @@ RUN apt-get update \
  && rm -rf /var/lib/apt/lists/*
 
 RUN Rscript -e 'install.packages("devtools")' \
- && Rscript -e 'devtools::install_github("coedl/tidylex", dependencies = c("Imports", "Suggests"))'
+ && Rscript -e 'devtools::install_github("coedl/tidylex", dependencies = c("Depends", "Imports", "Suggests"))'
 
 WORKDIR /
