@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 The purpose of tidylex is to provide a collaborative, open-source, cross-platform tool for tidying dictionary data stored as Toolbox-style backslash-coded data (a broad convention for serializing lexicographic data in a human-readable and -editable manner).
 This format is commonly used in the description of under-documented languages, many of which are also highly endangered.
 
-The example below shows a toy French-to-English dictionary with 3 entries *rouge*, *bonjour*, and *parler* with various lexicographic information about these 3 entries (`lx`: lexeme, `ps`: part of speech, `de`: definition, `xv`: example, vernacular in source language, `xe`: translation, English). Tidylex makes it easy to make assertions of how these entries *should* be structured, and to test whether or not they are well-structured ([examples](#examples) provided below).
+The example below shows a toy French-to-English dictionary with 3 entries *rouge*, *bonjour*, and *parler* with various lexicographic information about these 3 entries (`lx`: lexeme, `ps`: part of speech, `de`: definition, `xv`: example, vernacular in source language, `xe`: translation, English). Tidylex makes it easy to make assertions of how these entries *should* be structured, test whether or not they are well-structured ([examples](#examples) provided below), and, most importantly, communicate the results of these tests with relevant parties. 
 
 <pre style="background:#f1f1f1">
 <span class="bscode">\lx</span> <span class="bsval">rouge</span>

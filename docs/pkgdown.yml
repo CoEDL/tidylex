@@ -1,6 +1,9 @@
+pandoc: 2.1.2
+pkgdown: 0.1.0.9000
+pkgdown_sha: 4e194be97890ace7225932cbc3b4380085aedcf8
+articles:
+  tidylex: tidylex.html
 urls:
   reference: https://coedl.github.io/tidylex/reference
   article: https://coedl.github.io/tidylex/articles
-articles:
-  tidylex: tidylex.html
 

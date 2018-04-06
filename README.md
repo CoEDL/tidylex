@@ -23,8 +23,10 @@ entries *rouge*, *bonjour*, and *parler* with various lexicographic
 information about these 3 entries (`lx`: lexeme, `ps`: part of speech,
 `de`: definition, `xv`: example, vernacular in source language, `xe`:
 translation, English). Tidylex makes it easy to make assertions of how
-these entries *should* be structured, and to test whether or not they
-are well-structured ([examples](#examples) provided below).
+these entries *should* be structured, test whether or not they are
+well-structured ([examples](#examples) provided below), and, most
+importantly, communicate the results of these tests with relevant
+parties.
 
 <pre style="background:#f1f1f1">
 <span class="bscode">\lx</span> <span class="bsval">rouge</span>
