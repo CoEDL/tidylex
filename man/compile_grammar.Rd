@@ -2,7 +2,7 @@
 % Please edit documentation in R/compile_grammar.R
 \name{compile_grammar}
 \alias{compile_grammar}
-\title{Compile a Nearley grammar string and return parser function}
+\title{Compile a Nearley grammar string and return parser and railroad functions}
 \usage{
 compile_grammar(nearley_string)
 }
@@ -10,37 +10,31 @@ compile_grammar(nearley_string)
 \item{nearley_string}{character string of a Nearley grammar or a path to a .ne file}
 }
 \description{
-Compile a Nearley grammar string and return parser function
+Compile a Nearley grammar string and return parser and railroad functions
 }
 \examples{
 # 'Hello world' demo:
-parse_string <- compile_grammar('sequence -> "x" "y" "z"')
-parse_string("xyz")
+parser <- compile_grammar('sequence -> "x" "y" "z"')
+parser$parse_str("xyz")
 
 # A more complete demo:
 # 1. Read a lexicon and group lines using zoo:na.locf0()
+
 lexicon_df <-
-    system.file("extdata", "error-french.txt", package = "tidylex") \%>\%
-    read_lexicon(regex = "\\\\\\\\([a-z]+)\\\\s(.*)", into  = c("code", "value")) \%>\%
-    mutate(lx_line = ifelse(code == "lx", line, NA) \%>\% zoo::na.locf0())
+      system.file("extdata", "error-french.txt", package = "tidylex") \%>\%
+      read_lexicon(regex = "\\\\\\\\([a-z]+)", into  = "code") \%>\%
+      mutate(lx_start = ifelse(code == "lx", line, NA) \%>\% zoo::na.locf0())
 
 # 2. Define and compile a Nearley grammar to test code sequences
 headword_parser <-  compile_grammar('
-    headword -> "lx" _ "ps" _ "de" _:? examples:?
+   headword -> "lx" "ps" "de" example:?
 
-    examples -> ("xv" _ "xe" _:?):+
-
-    _ -> " "
+   example -> "xv" "xe"
 ')
 
-# 3. Form the code sequence strings and test them against the grammar
+# 3. For each 'lx_start' group, test the sequence of codes against grammar
 lexicon_df \%>\%
-    filter(!is.na(code)) \%>\%
-    group_by(lx_line) \%>\%
-    summarise(code_sequence = paste0(code, collapse = " ")) \%>\%
-    rowwise() \%>\%
-    mutate(parsed_sequence  = headword_parser(code_sequence, stop_on_error = FALSE)) \%>\%
-    # Remove successful parse trees (which are lists, and retain only error message strings)
-    filter(!is.list(parsed_sequence)) \%>\%
-    mutate(parsed_sequence = unlist(parsed_sequence))
+    group_by(lx_start) \%>\%
+    mutate(code_ok = headword_parser$parse_str(code, return_labels = TRUE))
+
 }

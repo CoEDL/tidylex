@@ -99,40 +99,23 @@ grouped_lxdf
 
 ### Formally define a well-formed entry and test entries against definition
 
-Tidylex lets you define and use basic [Nearley](https://nearley.js.org/) grammars within R to test for well-formedness of strings [[1](#nearley)]. We begin by forming a set of strings to test. In the example below, we simple concatenate all the codes within the 3 entry groups into a single string:
-
-```{r entry-strs}
-entry_strs <-
-    grouped_lxdf %>%
-    summarise(code_sequence = paste0(code, collapse = " "))
-
-entry_strs
-```
+Tidylex lets you define and use basic [Nearley](https://nearley.js.org/) grammars within R to test for well-formedness of sequence of backslash codes.
 
 For such sequences above, we can define a context-free grammar (equivalent to phrase structure rules) within the Nearley notation below (`:?`, `:+` are quantifiers indicating, respectively, 'zero or one' and 'one or more' of the preceding entity).
-We use the `compile_grammar` function to generate code that can be used to test strings as to whether or not they are well-formed.
+We use the `compile_grammar` function to generate code that can be used to test whether a series of values (e.g. those within the the `code` column) conform to a sequence expected by some grammar.
 
 ```{r nearley-grammar}
 entry_parser <-  compile_grammar('
-    headword -> "lx" _ "ps" _ "de" _ examples:?
+    headword -> "lx" "ps" "de" examples:?
 
-    examples -> ("xv" _ "xe" _):+
-
-    _ -> " "
+    examples -> ("xv" "xe"):+
 ')
 
-parsed_entries <-
-    entry_strs %>%
-    rowwise() %>%
-    mutate(parsed_sequence = entry_parser(code_sequence, stop_on_error = FALSE))
-
-# Remove successful parse trees (which are lists, and retain only error message strings)
-parsed_entries %>% 
-    filter(!is.list(parsed_sequence)) %>%
-    mutate(parsed_sequence = unlist(parsed_sequence))
+grouped_lxdf %>%
+    mutate(code_ok = entry_parser$parse_str(code, return_labels = TRUE))
 ```
 
-As we can see from the errors, the *parler* entry is missing an obligatory `xe` (English translation) for the `xv` code, while the *bonjour* entry is invalid because the `de` and `ps` codes have been reversed (relative to the order required by the grammar above `headword -> "lx" _ "ps" _ "de" ...`).
+We can see from the data frame above that the sequence of codes for entry group `1:rouge` (`lx ps de xv xe`) conforms to the grammar, while the group `7: bonjour` does not. We can see that there is a value `FALSE` for `code_ok` for the `de` line (line 8).
 
 <hr>
 

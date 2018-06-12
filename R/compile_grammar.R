@@ -1,43 +1,38 @@
-#' Compile a Nearley grammar string and return parser function
+#' Compile a Nearley grammar string and return parser and railroad functions
 #'
 #' @param nearley_string character string of a Nearley grammar or a path to a .ne file
 #'
 #' @import V8
 #' @importFrom readr read_file
+#' @importFrom jsonlite fromJSON
 #'
 #' @export
 #'
 #' @examples
 #' # 'Hello world' demo:
-#' parse_string <- compile_grammar('sequence -> "x" "y" "z"')
-#' parse_string("xyz")
+#' parser <- compile_grammar('sequence -> "x" "y" "z"')
+#' parser$parse_str("xyz")
 #'
 #' # A more complete demo:
 #' # 1. Read a lexicon and group lines using zoo:na.locf0()
+#'
 #' lexicon_df <-
-#'     system.file("extdata", "error-french.txt", package = "tidylex") %>%
-#'     read_lexicon(regex = "\\\\([a-z]+)\\s(.*)", into  = c("code", "value")) %>%
-#'     mutate(lx_line = ifelse(code == "lx", line, NA) %>% zoo::na.locf0())
+#'       system.file("extdata", "error-french.txt", package = "tidylex") %>%
+#'       read_lexicon(regex = "\\\\([a-z]+)", into  = "code") %>%
+#'       mutate(lx_start = ifelse(code == "lx", line, NA) %>% zoo::na.locf0())
 #'
 #' # 2. Define and compile a Nearley grammar to test code sequences
 #' headword_parser <-  compile_grammar('
-#'     headword -> "lx" _ "ps" _ "de" _:? examples:?
+#'    headword -> "lx" "ps" "de" example:?
 #'
-#'     examples -> ("xv" _ "xe" _:?):+
-#'
-#'     _ -> " "
+#'    example -> "xv" "xe"
 #' ')
 #'
-#' # 3. Form the code sequence strings and test them against the grammar
+#' # 3. For each 'lx_start' group, test the sequence of codes against grammar
 #' lexicon_df %>%
-#'     filter(!is.na(code)) %>%
-#'     group_by(lx_line) %>%
-#'     summarise(code_sequence = paste0(code, collapse = " ")) %>%
-#'     rowwise() %>%
-#'     mutate(parsed_sequence  = headword_parser(code_sequence, stop_on_error = FALSE)) %>%
-#'     # Remove successful parse trees (which are lists, and retain only error message strings)
-#'     filter(!is.list(parsed_sequence)) %>%
-#'     mutate(parsed_sequence = unlist(parsed_sequence))
+#'     group_by(lx_start) %>%
+#'     mutate(code_ok = headword_parser$parse_str(code, return_labels = TRUE))
+#'
 
 compile_grammar <- function(nearley_string) {
     stopifnot(is.character(nearley_string))
@@ -50,42 +45,51 @@ compile_grammar <- function(nearley_string) {
     ctx$source(system.file("nearley", "bundle.js", package = "tidylex"))
 
     ctx$assign("nearley_string", nearley_string)
+
+    # compileGrammar Javascript function defined in inst/nearley/in.js
     ctx$assign("grammar", JS('compileGrammar(nearley_string)'))
 
     grammar <- ctx$get("grammar")
 
     if("error" %in% names(grammar)) { stop(grammar$error) }
 
-    function(test_string, stop_on_error = TRUE) {
+    htmlFile <- file.path(tempfile(fileext = ".html"))
+    writeLines(grammar$railroad, htmlFile)
+    viewer <- getOption("viewer")
 
-        stop_or_report <- function(error) {
-            if(stop_on_error) {
-                stop(error)
+    list(
+        view_railroads = function() { viewer(htmlFile) },
+        parse_str  = function(test_array, return_labels = FALSE, labels = c(TRUE, FALSE), skip = c(NA)) {
+            # set skippable values as 0-length input for parser
+            # by default, we just skip NA values
+            # test_array[test_array %in% skip] <- ""
+
+            # Set test_array within the v8 Javascript env to input value
+            ctx$assign("test_array", test_array)
+
+            # Call parseArray function on the test_array object (within the v8 env)
+            # parseArray Javascript function defined in inst/nearley/in.js
+            parse_result <- fromJSON(
+                txt = ctx$eval(JS('parseArray(test_array, grammar)')),
+                simplifyVector = FALSE,
+                simplifyMatrix = FALSE,
+                simplifyDataFrame = FALSE
+            )
+
+            if(!return_labels) {
+                # If user wants the parser output (i.e. a list)
+                parse_result
             } else {
-                return(list(error = error$message))
+                # Otherwise, return 'labelled' input, default labels are TRUE and FALSE
+                # c("a", "b", ...) -> c(TRUE, TRUE, ...), where TRUE if linear sequence is valid according to the parser
+                if(!"error" %in% names(parse_result)) {
+                    rep(labels[1], length(test_array))
+                } else if(grepl("Incomplete", parse_result$error)) {
+                    c(rep(labels[1], length(test_array) - 1), NA)
+                } else {
+                    c(rep(labels[1], parse_result$index - 1), labels[2], rep(NA, length(test_array) - parse_result$index))
+                }
             }
         }
-
-        ctx$assign("test_string", test_string)
-        ctx$assign("parser", JS('new nearley.Parser(nearley.Grammar.fromCompiled(grammar), { keepHistory: true })'))
-
-        parse_result <- tryCatch({
-            ctx$eval(JS('parser.feed(test_string)'))
-        },
-            error = stop_or_report
-        )
-
-        if("error" %in% names(parse_result)) {
-            parse_result # This will be an error message returned from tryCatch code
-        } else {
-            parse_tree <- ctx$get("parser.results")
-
-            if(length(parse_tree) == 0) {
-                stop_or_report(list(message = paste0("Error: Parse incomplete, expecting more text at end of string: '", test_string, "'")))
-            } else {
-                parse_tree
-            }
-        }
-
-    }
+    )
 }

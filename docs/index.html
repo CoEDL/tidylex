@@ -8,8 +8,8 @@
 <title>Tidy lexicographical data in backslash-coded formats • tidylex</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/united/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
-<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="jquery.sticky-kit.min.js"></script><script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
+<!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
+<script src="pkgdown.js"></script><link href="extra.css" rel="stylesheet">
 <meta property="og:title" content="Tidy lexicographical data in backslash-coded formats">
 <meta property="og:description" content="More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.">
@@ -193,45 +193,35 @@
 <div id="formally-define-a-well-formed-entry-and-test-entries-against-definition" class="section level3">
 <h3 class="hasAnchor">
 <a href="#formally-define-a-well-formed-entry-and-test-entries-against-definition" class="anchor"></a>Formally define a well-formed entry and test entries against definition</h3>
-<p>Tidylex lets you define and use basic <a href="https://nearley.js.org/">Nearley</a> grammars within R to test for well-formedness of strings [<a href="#nearley">1</a>]. We begin by forming a set of strings to test. In the example below, we simple concatenate all the codes within the 3 entry groups into a single string:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">entry_strs &lt;-</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="st">    </span>grouped_lxdf <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="st">    </span><span class="kw">summarise</span>(<span class="dt">code_sequence =</span> <span class="kw">paste0</span>(code, <span class="dt">collapse =</span> <span class="st">" "</span>))</a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb4-5" data-line-number="5">entry_strs</a>
-<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="co">#&gt; # A tibble: 3 x 2</span></a>
-<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="co">#&gt;   lx_group   code_sequence    </span></a>
-<a class="sourceLine" id="cb4-8" data-line-number="8"><span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;            </span></a>
-<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="co">#&gt; 1 1: rouge   "lx ps de xv xe "</span></a>
-<a class="sourceLine" id="cb4-10" data-line-number="10"><span class="co">#&gt; 2 11: parler lx ps de xv      </span></a>
-<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co">#&gt; 3 7: bonjour "lx de ps "</span></a></code></pre></div>
-<p>For such sequences above, we can define a context-free grammar (equivalent to phrase structure rules) within the Nearley notation below (<code>:?</code>, <code>:+</code> are quantifiers indicating, respectively, ‘zero or one’ and ‘one or more’ of the preceding entity). We use the <code>compile_grammar</code> function to generate code that can be used to test strings as to whether or not they are well-formed.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">entry_parser &lt;-<span class="st">  </span><span class="kw"><a href="reference/compile_grammar.html">compile_grammar</a></span>(<span class="st">'</span></a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="st">    headword -&gt; "lx" _ "ps" _ "de" _ examples:?</span></a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"></a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="st">    examples -&gt; ("xv" _ "xe" _):+</span></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="st">    _ -&gt; " "</span></a>
-<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="st">'</span>)</a>
-<a class="sourceLine" id="cb5-8" data-line-number="8"></a>
-<a class="sourceLine" id="cb5-9" data-line-number="9">parsed_entries &lt;-</a>
-<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="st">    </span>entry_strs <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="st">    </span><span class="kw">rowwise</span>() <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">parsed_sequence =</span> <span class="kw">entry_parser</span>(code_sequence, <span class="dt">stop_on_error =</span> <span class="ot">FALSE</span>))</a>
-<a class="sourceLine" id="cb5-13" data-line-number="13"></a>
-<a class="sourceLine" id="cb5-14" data-line-number="14"><span class="co"># Remove successful parse trees (which are lists, and retain only error message strings)</span></a>
-<a class="sourceLine" id="cb5-15" data-line-number="15">parsed_entries <span class="op">%&gt;%</span><span class="st"> </span></a>
-<a class="sourceLine" id="cb5-16" data-line-number="16"><span class="st">    </span><span class="kw">filter</span>(<span class="op">!</span><span class="kw">is.list</span>(parsed_sequence)) <span class="op">%&gt;%</span></a>
-<a class="sourceLine" id="cb5-17" data-line-number="17"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">parsed_sequence =</span> <span class="kw">unlist</span>(parsed_sequence))</a>
-<a class="sourceLine" id="cb5-18" data-line-number="18"><span class="co">#&gt; Source: local data frame [2 x 3]</span></a>
-<a class="sourceLine" id="cb5-19" data-line-number="19"><span class="co">#&gt; Groups: &lt;by row&gt;</span></a>
-<a class="sourceLine" id="cb5-20" data-line-number="20"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb5-21" data-line-number="21"><span class="co">#&gt; # A tibble: 2 x 3</span></a>
-<a class="sourceLine" id="cb5-22" data-line-number="22"><span class="co">#&gt;   lx_group   code_sequence parsed_sequence                                </span></a>
-<a class="sourceLine" id="cb5-23" data-line-number="23"><span class="co">#&gt;   &lt;chr&gt;      &lt;chr&gt;         &lt;chr&gt;                                          </span></a>
-<a class="sourceLine" id="cb5-24" data-line-number="24"><span class="co">#&gt; 1 11: parler lx ps de xv   Error: Parse incomplete, expecting more text a…</span></a>
-<a class="sourceLine" id="cb5-25" data-line-number="25"><span class="co">#&gt; 2 7: bonjour "lx de ps "   "Error: invalid syntax at line 1 col 4:\n\n  l…</span></a></code></pre></div>
-<p>As we can see from the errors, the <em>parler</em> entry is missing an obligatory <code>xe</code> (English translation) for the <code>xv</code> code, while the <em>bonjour</em> entry is invalid because the <code>de</code> and <code>ps</code> codes have been reversed (relative to the order required by the grammar above <code>headword -&gt; "lx" _ "ps" _ "de" ...</code>).</p>
+<p>Tidylex lets you define and use basic <a href="https://nearley.js.org/">Nearley</a> grammars within R to test for well-formedness of sequence of backslash codes.</p>
+<p>For such sequences above, we can define a context-free grammar (equivalent to phrase structure rules) within the Nearley notation below (<code>:?</code>, <code>:+</code> are quantifiers indicating, respectively, ‘zero or one’ and ‘one or more’ of the preceding entity). We use the <code>compile_grammar</code> function to generate code that can be used to test whether a series of values (e.g. those within the the <code>code</code> column) conform to a sequence expected by some grammar.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">entry_parser &lt;-<span class="st">  </span><span class="kw"><a href="reference/compile_grammar.html">compile_grammar</a></span>(<span class="st">'</span></a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="st">    headword -&gt; "lx" "ps" "de" examples:?</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="st">    examples -&gt; ("xv" "xe"):+</span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="st">'</span>)</a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7">grouped_lxdf <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8"><span class="st">    </span><span class="kw">mutate</span>(<span class="dt">code_ok =</span> entry_parser<span class="op">$</span><span class="kw">parse_str</span>(code, <span class="dt">return_labels =</span> <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="co">#&gt; # A tibble: 14 x 6</span></a>
+<a class="sourceLine" id="cb4-10" data-line-number="10"><span class="co">#&gt; # Groups:   lx_group [3]</span></a>
+<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co">#&gt;     line data                         code  value         lx_group code_ok</span></a>
+<a class="sourceLine" id="cb4-12" data-line-number="12"><span class="co">#&gt;    &lt;int&gt; &lt;chr&gt;                        &lt;chr&gt; &lt;chr&gt;         &lt;chr&gt;    &lt;lgl&gt;  </span></a>
+<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="co">#&gt;  1     1 "\\lx rouge"                 lx    rouge         1: rouge TRUE   </span></a>
+<a class="sourceLine" id="cb4-14" data-line-number="14"><span class="co">#&gt;  2     2 "\\ps adjective"             ps    adjective     1: rouge TRUE   </span></a>
+<a class="sourceLine" id="cb4-15" data-line-number="15"><span class="co">#&gt;  3     3 "\\de red"                   de    red           1: rouge TRUE   </span></a>
+<a class="sourceLine" id="cb4-16" data-line-number="16"><span class="co">#&gt;  4     4 "\\xv La chaise est rouge"   xv    La chaise es… 1: rouge TRUE   </span></a>
+<a class="sourceLine" id="cb4-17" data-line-number="17"><span class="co">#&gt;  5     5 "\\xe The chair is red"      xe    The chair is… 1: rouge TRUE   </span></a>
+<a class="sourceLine" id="cb4-18" data-line-number="18"><span class="co">#&gt;  6     6 ""                           ""    ""            1: rouge TRUE   </span></a>
+<a class="sourceLine" id="cb4-19" data-line-number="19"><span class="co">#&gt;  7     7 "\\lx bonjour"               lx    bonjour       7: bonj… TRUE   </span></a>
+<a class="sourceLine" id="cb4-20" data-line-number="20"><span class="co">#&gt;  8     8 "\\de hello"                 de    hello         7: bonj… FALSE  </span></a>
+<a class="sourceLine" id="cb4-21" data-line-number="21"><span class="co">#&gt;  9     9 "\\ps exclamation"           ps    exclamation   7: bonj… NA     </span></a>
+<a class="sourceLine" id="cb4-22" data-line-number="22"><span class="co">#&gt; 10    10 ""                           ""    ""            7: bonj… NA     </span></a>
+<a class="sourceLine" id="cb4-23" data-line-number="23"><span class="co">#&gt; 11    11 "\\lx parler"                lx    parler        11: par… TRUE   </span></a>
+<a class="sourceLine" id="cb4-24" data-line-number="24"><span class="co">#&gt; 12    12 "\\ps verb"                  ps    verb          11: par… TRUE   </span></a>
+<a class="sourceLine" id="cb4-25" data-line-number="25"><span class="co">#&gt; 13    13 "\\de speak"                 de    speak         11: par… TRUE   </span></a>
+<a class="sourceLine" id="cb4-26" data-line-number="26"><span class="co">#&gt; 14    14 "\\xv Parlez-vous français?" xv    Parlez-vous … 11: par… NA</span></a></code></pre></div>
+<p>We can see from the data frame above that the sequence of codes for entry group <code>1:rouge</code> (<code>lx ps de xv xe</code>) conforms to the grammar, while the group <code>7: bonjour</code> does not. We can see that there is a value <code>FALSE</code> for <code>code_ok</code> for the <code>de</code> line (line 8).</p>
 <hr>
 <p><b>Footnotes</b></p>
 <ol style="list-style-type: decimal">

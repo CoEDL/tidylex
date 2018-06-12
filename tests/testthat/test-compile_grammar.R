@@ -35,43 +35,52 @@ test_that("Nearley .ne grammar files are read in properly", {
 
 test_that("tests against basic nearley grammar return as expected", {
 
+    parser <- compile_grammar(basic_grammar)
+
+    expect_equal(
+        names(parser),
+        c("view_railroads", "parse_str")
+    )
+
+    expect_true(
+        all(lapply(parser, typeof) == "closure")
+    )
+
+    parse_result <- parser$parse_str("Charles sleeps while thinking about snakes.")$parse_trees
+
+    # There shouldn't be an ambiguous parse (i.e. length >= 2)
+    expect_length(parse_result, 1)
+
     expect_identical(
         # Correct parse
-        compile_grammar(basic_grammar)("Charles sleeps while thinking about snakes."),
-        list(
+        parse_result,
+        list(                         # First (and only parse)
             list(                       # MAIN
                 list(                       # SENTENCE
-                    "Charles",                  # SUB
-                    " ",                        # _
-                    "sleeps",                   # VERB
-                    " ",                        # _
+                    list("Charles"),                  # SUB
+                    list(" "),                        # _
+                    list("sleeps"),                   # VERB
+                    list(" "),                        # _
                     list(                       # MOD
                         "while thinking about", #    "while thinking about"
-                        " ",                    #    _
-                        "snakes"                #    OBJ
+                        list(" "),                    #    _
+                        list("snakes")                #    OBJ
                     )
                 ),
             ".")                            # "."
         )
     )
 
-    expect_error(
+    expect_equal(
         # Incomplete parse
-        compile_grammar(basic_grammar)("Charles sleeps while thinking about ")
+        parser$parse_str("Charles sleeps while thinking about ")$error,
+        "Incomplete parse, expecting more data at end of input."
     )
 
-    expect_error(
+    expect_equal(
         # Invalid parse
-        compile_grammar(basic_grammar)("This test doesn't match :(")
-    )
-
-    # As above, but error messages returned when told not to stop script
-    expect_true(
-        "error" %in% names(compile_grammar(basic_grammar)("Charles sleeps while thinking about ", stop_on_error = FALSE))
-    )
-
-    expect_true(
-        "error" %in% names(compile_grammar(basic_grammar)("This test doesn't match :(", stop_on_error = FALSE))
+        parser$parse_str("This test doesn't match :(")$error,
+        "Error: invalid syntax at line 1 col 1:\n\n  T\n  ^\nUnexpected \"T\"\n"
     )
 
 })
