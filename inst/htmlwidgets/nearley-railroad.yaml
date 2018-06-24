@@ -1,0 +1,5 @@
+dependencies:
+- name: railroad-css
+  version: 0.0.0
+  src: "htmlwidgets"
+  stylesheet: railroad-diagrams.css

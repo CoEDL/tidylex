@@ -44,7 +44,7 @@ global.compileGrammar = function (sourceCode) {
     const module = { exports: {} };
     eval(grammarJs);
 
-    module.exports.railroad = railroad(grammarAst);
+    module.exports.railroad_html = '<div class="railroad_wrapper">' + railroad(grammarAst) + '</div>';
 
     return module.exports;
 }
@@ -63,8 +63,8 @@ global.railroad = function(grm) {
 
     var diagrams = Object.keys(rules).map(function(r) {
         return [
-          '<h1><code>' + r + '</code></h1>',
-          '<div>',
+          '<p class="production_rule">' + r + '</p>',
+          '<div class="svg_div">',
             diagram(r).toString(),
           '</div>'
         ].join('\n');
@@ -112,40 +112,7 @@ global.railroad = function(grm) {
         return new rr.Diagram([renderTok(outer)]);
     }
 
-    return [
-      '<!DOCTYPE html>',
-      '<html>',
-        '<head>',
-          '<meta charset="UTF-8">',
-          '<style type="text/css">',
-            'svg.railroad-diagram { background-color: hsl(30,20%,95%); }',
-            'svg.railroad-diagram path {',
-                'stroke-width: 3;',
-                'stroke: black;',
-                'fill: rgba(0,0,0,0);',
-            '}',
-                'svg.railroad-diagram text {',
-                'font: bold 14px monospace;',
-                'text-anchor: middle;',
-            '}',
-                'svg.railroad-diagram text.label {',
-                'text-anchor: start;',
-            '}',
-                'svg.railroad-diagram text.comment {',
-                'font: italic 12px monospace;',
-            '}',
-                'svg.railroad-diagram rect {',
-                'stroke-width: 3;',
-                'stroke: black;',
-                'fill: hsl(120,100%,90%);',
-            '}',
-          '</style>',
-        '</head>',
-        '<body>',
-          diagrams.join('\n'),
-        '</body>',
-      '</html>'
-    ].join('\n');
+    return diagrams.join('\n')
 
 }
 

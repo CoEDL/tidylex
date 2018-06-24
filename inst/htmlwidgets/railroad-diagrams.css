@@ -1,0 +1,69 @@
+/*svg.railroad-diagram {
+    background-color: hsl(30,20%,95%);
+}*/
+
+p.production_rule {
+    text-align: left;
+    font: bold 14px monospace;
+}
+
+svg.railroad-diagram path {
+    stroke-width: 2;
+    stroke: black;
+    fill: rgba(0,0,0,0);
+}
+
+svg.railroad-diagram text {
+    font: bold 12px monospace;
+    text-anchor: middle;
+}
+
+svg.railroad-diagram text.diagram-text {
+    font-size: 12px;
+}
+
+svg.railroad-diagram text.diagram-arrow {
+    font-size: 12px;
+    color: red;
+}
+
+svg.railroad-diagram text.label {
+    text-anchor: start;
+}
+
+svg.railroad-diagram text.comment {
+    font: italic 12px monospace;
+}
+
+svg.railroad-diagram g.non-terminal text {
+    font-style: italic;
+}
+
+svg.railroad-diagram rect {
+    stroke-width: 2;
+    stroke: black;
+    fill: hsl(120,100%,90%);
+}
+
+svg.railroad-diagram path.diagram-text {
+    stroke-width: 3;
+    stroke: black;
+    fill: white;
+    cursor: help;
+}
+
+svg.railroad-diagram g.diagram-text:hover path.diagram-text {
+    fill: #eee;
+}
+
+div.svg_div {
+    text-align: left;
+    max-width: 100%;
+    background-color: #f9f9f9;
+    overflow-x: scroll;
+}
+
+div.railroad_wrapper {
+    max-width: 1600px;
+    text-align: center;
+}

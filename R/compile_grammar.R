@@ -5,6 +5,7 @@
 #' @import V8
 #' @importFrom readr read_file
 #' @importFrom jsonlite fromJSON
+#' @importFrom htmlwidgets createWidget
 #'
 #' @export
 #'
@@ -54,15 +55,24 @@ compile_grammar <- function(nearley_string) {
     if("error" %in% names(grammar)) { stop(grammar$error) }
 
     htmlFile <- file.path(tempfile(fileext = ".html"))
-    writeLines(grammar$railroad, htmlFile)
+    writeLines(grammar$railroad_html, htmlFile)
     viewer <- getOption("viewer")
 
     list(
-        view_railroads = function() { viewer(htmlFile) },
+        view_railroads = function() {
+            htmlwidgets::createWidget(
+                     name = 'nearley-railroad',
+                        x = grammar$railroad_html,
+                    width = NULL,
+                   height = NULL,
+                  package = 'tidylex',
+                elementId = NULL
+                )
+            },
         parse_str  = function(test_array, return_labels = FALSE, labels = c(TRUE, FALSE), skip = c(NA)) {
             # set skippable values as 0-length input for parser
             # by default, we just skip NA values
-            # test_array[test_array %in% skip] <- ""
+            test_array[test_array %in% skip] <- ""
 
             # Set test_array within the v8 Javascript env to input value
             ctx$assign("test_array", test_array)
