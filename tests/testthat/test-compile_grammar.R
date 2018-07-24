@@ -84,3 +84,36 @@ test_that("tests against basic nearley grammar return as expected", {
     )
 
 })
+
+test_that("vector labelling function returns expected labels", {
+
+    parser <- compile_grammar('word -> "one" "two" "three"')$parse_str
+
+    expect_identical(
+        parser(c("one", "two", "three"), return_labels = TRUE),
+        c(TRUE, TRUE, TRUE)
+    )
+
+    expect_identical(
+        parser(c("one", "three", "two"), return_labels = TRUE),
+        c(TRUE, FALSE, NA)
+    )
+
+    expect_identical(
+        parser(c("one", "two", NA), return_labels = TRUE),
+        c(TRUE, TRUE, NA)
+    )
+
+})
+
+test_that("railroad diagram HTML generated as expected", {
+
+    railroad_html <- compile_grammar("x -> y")$view_railroads()$x
+
+    expect_equal(
+        railroad_html,
+        "<div class=\"railroad_wrapper\"><p class=\"production_rule\">x</p>\n<div class=\"svg_div\">\n<svg class=\"railroad-diagram\" width=\"169\" height=\"62\" viewBox=\"0 0 169 62\">\n<g transform=\"translate(.5 .5)\">\n<path d=\"M 20 21 v 20 m 10 -20 v 20 m -10 -10 h 20.5\"></path>\n<g>\n<path d=\"M40 31h0\"></path>\n<path d=\"M128 31h0\"></path>\n<path d=\"M40 31h20\"></path>\n<g>\n<path d=\"M60 31h0\"></path>\n<path d=\"M108 31h0\"></path>\n<path d=\"M60 31h10\"></path>\n<g>\n<path d=\"M70 31h0\"></path>\n<path d=\"M98 31h0\"></path>\n<rect x=\"70\" y=\"20\" width=\"28\" height=\"22\"></rect>\n<text x=\"84\" y=\"35\">y</text>\n</g>\n<path d=\"M98 31h10\"></path>\n</g>\n<path d=\"M108 31h20\"></path>\n</g>\n<path d=\"M 128 31 h 20 m -10 -10 v 20 m 10 -20 v 20\"></path>\n</g>\n</svg>\n\n</div></div>"
+    )
+
+})
+
