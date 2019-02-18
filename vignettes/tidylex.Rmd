@@ -9,57 +9,171 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+```{r setup, include=FALSE}
+library(tidylex)
 ```
 
-Vignettes are long form documentation commonly included in packages. Because they are part of the distribution of the package, they need to be as compact as possible. The `html_vignette` output type provides a custom style sheet (and tweaks some options) to ensure that the resulting html is as small as possible. The `html_vignette` format:
+## Overview
 
-- Never uses retina figures
-- Has a smaller default figure size
-- Uses a custom CSS stylesheet instead of the default Twitter Bootstrap style
+This (interactive) tutorial demonstrates the functions and capabilities of the `tidylex` package in transforming dictionary text data, specifically those in the "backslash code" format. We will be applying the functions introduced in the [Index](https://coedl.github.io/tidylex/index.html) to an actual dictionary file, and using them in conjunction with other [tidyr](https://tidyr.tidyverse.org/) functions to show how you can use `tidylex` to your advantage.
 
-## Vignette Info
+## Step 0. Access the dictionary file
 
-Note the various macros within the `vignette` section of the metadata block above. These are required in order to instruct R how to build the vignette. Note that you should change the `title` field and the `\VignetteIndexEntry` to match the title of your vignette.
+We will be using a subset of the [Rotokas dictionary]( https://github.com/nltk/nltk_data/blob/gh-pages/packages/corpora/toolbox.zip), a Toolbox file of all entries starting with 'k' (~12000 lines). Download the file from the page into a directory of your choice, making sure that your directory on RStudio has access to it.
 
-## Styles
+``` {r rotokas, message=FALSE}
 
-The `html_vignette` template includes a basic CSS theme. To override this theme you can specify your own CSS in the document metadata as follows:
+rtk_lines <- readLines("../src/rotokas.dic")
 
-    output: 
-      rmarkdown::html_vignette:
-        css: mystyles.css
+rtk_lines %>% head(15)
 
-## Figures
-
-The figure sizes have been customised so that you can easily put two images side-by-side. 
-
-```{r, fig.show='hold'}
-plot(1:10)
-plot(10:1)
 ```
 
-You can enable figure captions by `fig_caption: yes` in YAML:
+Each step below will exemplify each of the following functions: 
 
-    output:
-      rmarkdown::html_vignette:
-        fig_caption: yes
+  1. `read_lexicon()`
+  2. `add_group_col()`
+  3. `compile_grammar()`
 
-Then you can use the chunk option `fig.cap = "Your figure caption."` in **knitr**.
+## Step 1. Read lexicon files with `read_lexicon()`
 
-## More Examples
+Read your dictionary text file directly into a dataframe with `read_lexicon()`. With no additional arguments, `read_lexicon()` just inserts a column of line numbers. 
 
-You can write math expressions, e.g. $Y = X\beta + \epsilon$, footnotes^[A footnote here.], and tables, e.g. using `knitr::kable()`.
+```{r read-default, warning=FALSE, message=FALSE}
 
-```{r, echo=FALSE, results='asis'}
-knitr::kable(head(mtcars, 10))
+rtk_df <- read_lexicon("../src/rotokas.dic")
+
+rtk_df %>% DT::datatable()
 ```
 
-Also a quote using `>`:
+By specifying a regular expression (`regex`), and the column names (`into`), you can separate lines into their components. For now, let's just isolate the backslash codes from the values. Notice how the metadata lines (lines 1-3) have been filtered out, since they do not satisfy our regular expression.
 
-> "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+```{r read-regex, warning=FALSE, message=FALSE}
+
+rtk_df <- read_lexicon(
+  file  = "../src/rotokas.dic", 
+  regex = "\\\\([a-z]+) (.*)",   # Note two capture groups, in parentheses
+  into  = c("code", "value")     # Captured data placed, respectively, in 'code' and 'value' columns
+  )
+
+rtk_df %>% DT::datatable()
+
+```
+
+
+### Step 1b. Filtering
+
+Having structured the dictionary lines into useful categories, you can use the `filter()` function to target specific lines, as in the following examples.
+
+```{r read-filter, warning=FALSE, message=FALSE}
+
+# List of all lexical entry lines
+rtk_df %>% filter(code == "lx") %>% DT::datatable()
+
+# List of all entry lines, English gloss lines, and Tok Pisin translations
+rtk_df %>% filter(code %in% c("lx", "ge", "tkp")) %>% DT::datatable()
+
+# List of all unknown data value lines
+rtk_df %>% filter(value %>% stringr::str_detect("^\\?")) %>% DT::datatable()
+
+```
+
+The last dataframe with the unknown data value lines isn't so informative - how do we know which entries they belong to? 
+
+## Step 2. Group lines together with `add_group_col()`
+
+By appending a grouping column to the dataframe, we can retain information on its parent headword before the `filter()` function.
+
+```{r group-col-entry, warning=FALSE, message=FALSE}
+
+# Grouping entries by parent headword ("lx_group")
+rtk_df <- 
+  rtk_df %>% add_group_col(
+    name = lx_group,                     # Name of the new grouping column
+    where = code == "lx",                # When to fill with a value, i.e. when *not* to inherit value
+    value = paste0(line, ": ", value)    # What the value should be when above condition is true
+    )
+
+# Filtering again to retain only unknown data values
+rtk_df %>% 
+  filter(value %>% stringr::str_detect("^\\?")) %>% 
+  
+# Adding tally to see which entries have the most unknown values
+  group_by(lx_group) %>% 
+  add_tally() %>% 
+  arrange(desc(n)) %>%
+  DT::datatable()
+
+```
+
+
+## Step 3. Validate dictionary structures using `compile_grammar()`
+
+The following method shows how you can test grammatical structures on your dictionary text, and access ungrammatical lines. 
+
+```{r grammar, warning=FALSE, message=FALSE}
+
+# Creating a skeleton grammar (only validates five codes)
+rtk_skeleton <-
+  'entry -> hword usage:+       
+   usage -> gloss:+ example:?   
+   example -> (rtk tkp eng):+   
+
+   hword -> "lx"    # Entry word
+   gloss -> "ge"    # Gloss line
+   rtk -> "ex"      # Rotokas example
+   tkp -> "xp"      # Tok Pisin translation
+   eng -> "xe"      # English translation
+  '
+
+rtk_parser <- compile_grammar(rtk_skeleton)
+
+# Identifying those codes used in grammar
+skeleton_codes <-
+  stringr::str_extract_all(rtk_skeleton, '"(.*?)"') %>%
+  unlist() %>%
+  stringr::str_remove_all('"')
+
+# Running dictionary through grammar
+rtk_parsed <-
+  rtk_df %>%                              # Remember, all lines are grouped by lx_group
+  filter(code %in% skeleton_codes) %>%    # Keeping only lines specified by grammar
+  mutate(                                 # Adding column showing line grammaticality (T/F/NA)
+    code_ok = rtk_parser$parse_str(code, return_labels = TRUE)  
+    )
+
+rtk_parsed %>% DT::datatable()
+
+# Isolating entries with erroneous lines
+# Providing ungrammatical code sequences
+rtk_invalid <-
+  rtk_parsed %>% 
+  filter(                      
+    any(code_ok == FALSE,      # Lines out of order
+        is.na(code_ok))        # Lines with missing lines afterwards
+    ) %>%
+  summarise(code_seq = paste0(code, collapse = ", "))
+
+rtk_invalid
+```
+
+
+## Step 3b. How much of the dictionary does your grammar cover?
+
+```{r count, message=FALSE, warning=FALSE}
+# Listing all backslash codes used, sorting by frequency
+rtk_codes <- 
+  rtk_df %>%   
+  filter(!is.na(code)) %>% 
+  group_by(code) %>% 
+  tally() %>% 
+  arrange(desc(n)) %>% 
+  mutate(weight = round(n*100/sum(n),2))
+
+# How many lines have been validated by the grammar?
+rtk_codes %>% filter(code %in% skeleton_codes) -> processed_lex
+paste("Lines processed:", sum(processed_lex$n))
+paste("Number of lines in dictionary:", sum(rtk_codes$n))
+paste0("Grammar coverage: ", round(100*sum(processed_lex$n)/sum(rtk_codes$n), 2), "%")
+
+```

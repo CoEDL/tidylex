@@ -2,3 +2,4 @@ inst/nearley/node_modules
 packrat/lib*/
 .Rproj.user
 inst/doc
+*.Rhistory
