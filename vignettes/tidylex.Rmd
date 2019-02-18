@@ -17,7 +17,7 @@ library(tidylex)
 
 This (interactive) tutorial demonstrates the functions and capabilities of the `tidylex` package in transforming dictionary text data, specifically those in the "backslash code" format. We will be applying the functions introduced in the [Index](https://coedl.github.io/tidylex/index.html) to an actual dictionary file, and using them in conjunction with other [tidyr](https://tidyr.tidyverse.org/) functions to show how you can use `tidylex` to your advantage.
 
-## Step 0. Access the dictionary file
+## 0. Access the dictionary file
 
 We will be using a subset of the [Rotokas dictionary]( https://github.com/nltk/nltk_data/blob/gh-pages/packages/corpora/toolbox.zip), a Toolbox file of all entries starting with 'k' (~12000 lines). Download the file from the page into a directory of your choice, making sure that your directory on RStudio has access to it.
 
@@ -29,13 +29,13 @@ rtk_lines %>% head(15)
 
 ```
 
-Each step below will exemplify each of the following functions: 
+Each section below will exemplify each of the following functions: 
 
   1. `read_lexicon()`
   2. `add_group_col()`
   3. `compile_grammar()`
 
-## Step 1. Read lexicon files with `read_lexicon()`
+## 1. Read lexicon files with `read_lexicon()`
 
 Read your dictionary text file directly into a dataframe with `read_lexicon()`. With no additional arguments, `read_lexicon()` just inserts a column of line numbers. 
 
@@ -61,7 +61,7 @@ rtk_df %>% DT::datatable()
 ```
 
 
-### Step 1b. Filtering
+### 1b. Filtering
 
 Having structured the dictionary lines into useful categories, you can use the `filter()` function to target specific lines, as in the following examples.
 
@@ -78,11 +78,11 @@ rtk_df %>% filter(value %>% stringr::str_detect("^\\?")) %>% DT::datatable()
 
 ```
 
-The last dataframe with the unknown data value lines isn't so informative - how do we know which entries they belong to? 
+The last dataframe with the unknown data value lines isn't so informative - ideally, we want information about their headword parent as well, to identify which entries need fixing.
 
-## Step 2. Group lines together with `add_group_col()`
+## 2. Group lines together with `add_group_col()`
 
-By appending a grouping column to the dataframe, we can retain information on its parent headword before the `filter()` function.
+By appending a grouping column to the dataframe, we can retain information on parent headwords before applying the `filter()` function.
 
 ```{r group-col-entry, warning=FALSE, message=FALSE}
 
@@ -107,13 +107,13 @@ rtk_df %>%
 ```
 
 
-## Step 3. Validate dictionary structures using `compile_grammar()`
+## 3. Validate dictionary structures using `compile_grammar()`
 
-The following method shows how you can test grammatical structures on your dictionary text, and access ungrammatical lines. 
+This function allows you to test grammatical structures on your dictionary. The following method uses the function to access all entries that have ungrammatical lines.
 
 ```{r grammar, warning=FALSE, message=FALSE}
 
-# Creating a skeleton grammar (only validates five codes)
+# Creating a skeleton grammar (that only validates five codes)
 rtk_skeleton <-
   'entry -> hword usage:+       
    usage -> gloss:+ example:?   
@@ -126,6 +126,7 @@ rtk_skeleton <-
    eng -> "xe"      # English translation
   '
 
+# Applying compile_grammar()
 rtk_parser <- compile_grammar(rtk_skeleton)
 
 # Identifying those codes used in grammar
@@ -136,7 +137,7 @@ skeleton_codes <-
 
 # Running dictionary through grammar
 rtk_parsed <-
-  rtk_df %>%                              # Remember, all lines are grouped by lx_group
+  rtk_df %>%                              # Remember, all lines are grouped by their lx_group
   filter(code %in% skeleton_codes) %>%    # Keeping only lines specified by grammar
   mutate(                                 # Adding column showing line grammaticality (T/F/NA)
     code_ok = rtk_parser$parse_str(code, return_labels = TRUE)  
@@ -144,7 +145,7 @@ rtk_parsed <-
 
 rtk_parsed %>% DT::datatable()
 
-# Isolating entries with erroneous lines
+# Isolating all entries with erroneous lines
 # Providing ungrammatical code sequences
 rtk_invalid <-
   rtk_parsed %>% 
@@ -158,7 +159,7 @@ rtk_invalid
 ```
 
 
-## Step 3b. How much of the dictionary does your grammar cover?
+### 3b. How much of the dictionary does your grammar cover?
 
 ```{r count, message=FALSE, warning=FALSE}
 # Listing all backslash codes used, sorting by frequency
