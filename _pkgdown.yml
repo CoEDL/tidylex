@@ -15,10 +15,6 @@ navbar:
     href: articles/tidylex.html
   - text: Reference
     href: reference/index.html
-  - text: Articles
-    menu:
-    - text: Two-table verbs
-      href: articles/index.html
   - text: News
     href: news/index.html
   right:
